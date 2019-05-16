@@ -1,5 +1,6 @@
 import sys
 import random
+from entidades import *
 
 
 
@@ -39,7 +40,22 @@ def dibujar(loc):
 
 if __name__ == "__main__":
 
+	# damos la bienvenida al juego
 	bienvenida()
+	# presentam las instrucciones del juego 
 	movimientos()
+
+	#Definimos los objetos o  entidades ( Agente, Laberinto y Conocimiento)
+
+	agente =  Agente()
+	#print(agente)
+	conocimiento = Conocimiento()
+	#print(conocimiento)
+
+	laberinto = Laberinto()
+	#print(laberinto) # solución muestra en que parte se encuentra el wumpus el oro y los huecos 
+	
+
+
 	dibujar((1,3))
 
