@@ -86,6 +86,86 @@ class Agente:
 
 		return info
 
+	def perform(self, accion, labe, conoc):
+		""" ejecutara una acción. la cual retornara True si la acción mata al wumpus si no retornara falso"""
+		tipo, rotacion = accion
+		if tipo == Acciones.Moverse:
+			self.mover(rotacion)
+		elif tipo == Acciones.Disparar:
+			if rotacion is not None:
+				self.posicion = girar(self.posicion, rotacion)
+			return self.disparar(labe,conoc)
+		elif tipo == Acciones.Coger:
+			labe[self.direccion].gold = Estado.Ausente
+			self.tiene_oro = True
+		elif tipo == Acciones.Girar:
+			self.posicion = girar(self.posicion, rotacion)
+		return False
+
+	def mover(self, rotacion):
+		"""funcion que mueve al agente """
+		for steps in rotacion:
+			self.posicion = girar(self.posicion, steps)
+			self.direccion = mover_adelante(self.direccion, self.posicion)
+
+
+	def disparar(self, labe, conoc):
+		""" lanzara la flecha y verifica si el wumpus fue herido """
+		x,y = self.direccion
+		ancho, alto = labe.size
+
+		# retirar la flecha
+		self.tiene_flecha= False
+
+		# dispara de acuerdo con la direccion acutal """
+		if self.posicion == 0:
+
+			# sigue los cuadros de arriba
+			i = y
+			while i >=0:
+				conoc[x,i],wumpus = Estado.Ausente
+				if labe[x,i].wumpus == Estado.Presente:
+					labe[x,i].wumpus = Estado.Ausente
+					conoc.matar_wumpus()
+					return True
+				i +=1
+		elif self.posicion == 1:
+
+			# sigue los cuadros de la derecha
+			i = x
+			while i <ancho:
+				conoc[i,y],wumpus = Estado.Ausente
+				if labe[i,y].wumpus == Estado.Presente:
+					labe[i,y].wumpus = Estado.Ausente
+					conoc.matar_wumpus()
+					return True
+				i +=1
+		if self.posicion == 2:
+
+			# sigue los cuadros de abajo
+			i = y
+			while i < alto:
+				conoc[x,i],wumpus = Estado.Ausente
+				if labe[x,i].wumpus == Estado.Presente:
+					labe[x,i].wumpus = Estado.Ausente
+					conoc.matar_wumpus()
+					return True
+				i +=1
+		else:
+			# sigue los cuadros de la izquierda
+			i = x
+			while i >= 0:
+				conoc[i,y],wumpus = Estado.Ausente
+				if labe[i,y].wumpus == Estado.Presente:
+					labe[i,y].wumpus = Estado.Ausente
+					conoc.matar_wumpus()
+					return True
+				i +=1
+		# si la flecha no mata al wumpus
+		return False
+
+
+
 
 class Conocimiento:
 	"""clase que representará el conocimiento del agente sobre el laberinto """

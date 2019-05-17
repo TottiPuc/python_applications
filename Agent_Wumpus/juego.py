@@ -55,7 +55,7 @@ if __name__ == "__main__":
 	#print(laberinto) # solución muestra en que parte se encuentra el wumpus el oro y los huecos 
 #===========================================================================================
 	
-
-
-	dibujar((1,3))
+while True:
+	print("Agente:\n {}".format(agente))
+	dibujar(agente.direccion)
 
