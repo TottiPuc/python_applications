@@ -15,10 +15,54 @@ class Cuarto:
 
 		return str([self.wumpus.value, self.hueco.value, self.oro.value])
 
+	def es_seguro(self, peligro=None):
+		""" devolvera un True si en el cuadro actual no hay ni un hueco ni el wumpus"""
+		if peligro is None:
+			return self.wumpus == Estado.Ausente and self.hueco == Estado.Ausente
+		if peligro == Wumpus:
+			return self.wumpus == Estado.Ausente
+		if peligro == hueco:
+			return self.hueco == Estado.Ausente
+		raise ValueError
+
+	def es_inseguro(self, peligro=None):
+		"""devuelve True si el cuadro no tiene ni wunpus ni hueco"""
+		return self.es_peligroso(peligro) or self.es_mortal(peligro)
+
+	def es_peligroso(self, peligro=None):
+		""" devolvera True si en el cuadro puede existir presencia del wumpus o haber un hueco """
+		if peligro is None:
+			return self.wumpus == Estado.Probable and self.hueco == Estado.Probable
+		if peligro == Wumpus:
+			return self.wumpus == Estado.Probable
+		if peligro == hueco:
+			return self.hueco == Estado.Probable
+		raise ValueError
 
 
+	def es_mortal(self, peligro=None):
+		"""  devuelve True si en el cuadro definitivamente hay Wumpus o un hueco """
+		if peligro is None:
+			return self.wumpus == Estado.Presente and self.hueco == Estado.Presente
+		if peligro == Wumpus:
+			return self.wumpus == Estado.Presente
+		if peligro == hueco:
+			return self.hueco == Estado.Presente
+		raise ValueError
 
+	@property
+	def es_explorada(self):
+		""" devuelve True si la sala ya fue explorada"""
+		assert self.oro != Estado.Probable
+		return self.oro != Estado.Desconocido
 
+	@property
+	def es_inexplorada(self):
+		""" devuelve un True si la sala no fue inexplorada"""
+		return self.es_explorada
+	
+		
+	
 
 class Agente:
 	""" represeta el agente que recorrera el laberinto """
@@ -78,8 +122,43 @@ class Conocimiento:
 			y +=1
 		return planta
 
+	def __getitem__(self,direccion):
+		""" obtiene el punto exacto del agente"""
+		x,y = direccion
+		return self._cuartos[y][x]
 
+	def __setitem__(self, direccion, value):
+		""" define la direccion en el cuarto del agente"""
+		x,y = direccion
+		self._cuartos[y][x] = value
 
+	def cuartos (self, condicion=None):
+		""" retorna un generador de indices de cada cuadro que cumple con las condiciones"""
+
+		y=0
+		for path in self._cuartos:
+			x=0
+			for cuarto in path:
+				if condicion is None or condicion(cuarto):
+					yield x,y
+				x+=1
+			y+=1
+
+	@property
+	def explorada(self):
+		"""retorna un explorador de indices de los cuadros ya explorados"""
+		return self.cuartos(lambda r: r.es_explorada)
+
+	@property
+	def inexplorada(self):
+		return self.cuartos(lambda r: not r.es_explorada)
+
+	def matar_wumpus(self):
+		"""altera el estado de cada cuadro de tal manera que no puede ser el wumpus"""
+		for path in self._cuartos:
+			for cuarto in path:
+				cuarto.wumpus = Estado.Ausente
+	
 
 class Laberinto(Conocimiento):
 	""" Esta es la clase que representa el laberinto donde vive el wumpus"""

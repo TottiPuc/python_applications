@@ -45,15 +45,15 @@ if __name__ == "__main__":
 	# presentam las instrucciones del juego 
 	movimientos()
 
+#===========================================================================================
 	#Definimos los objetos o  entidades ( Agente, Laberinto y Conocimiento)
-
 	agente =  Agente()
 	#print(agente)
 	conocimiento = Conocimiento()
 	#print(conocimiento)
-
 	laberinto = Laberinto()
 	#print(laberinto) # solución muestra en que parte se encuentra el wumpus el oro y los huecos 
+#===========================================================================================
 	
 
 
