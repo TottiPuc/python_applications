@@ -1,5 +1,6 @@
 import random 
 from enumerar import *
+from movimiento import *
 class Cuarto:
 	"""entidad que representa un unico cuadro del juego"""
 
@@ -67,14 +68,14 @@ class Cuarto:
 class Agente:
 	""" represeta el agente que recorrera el laberinto """
 	def __init__(self):
-		self.direccion = 1
 		self.posicion = (0,0)
+		self.direccion = 1
 		self.tiene_oro = False
 		self.tiene_flecha = True
 
 	def __repr__(self):
 		""" retorna la representacion dell objeto de esa instancia """
-		return str([self.direccion, self.posicion, self.tiene_oro , self.tiene_flecha])
+		return str([self.posicion, self.direccion,  self.tiene_oro , self.tiene_flecha])
 
 	def __str__(self):
 		print("\n========================================")
@@ -86,66 +87,66 @@ class Agente:
 
 		return info
 
-	def perform(self, accion, labe, conoc):
+	def rendimiento(self, accion, labe, conoc):
 		""" ejecutara una acción. la cual retornara True si la acción mata al wumpus si no retornara falso"""
 		tipo, rotacion = accion
 		if tipo == Acciones.Moverse:
 			self.mover(rotacion)
 		elif tipo == Acciones.Disparar:
 			if rotacion is not None:
-				self.posicion = girar(self.posicion, rotacion)
+				self.direccion = girar(self.direccion, rotacion)
 			return self.disparar(labe,conoc)
 		elif tipo == Acciones.Coger:
-			labe[self.direccion].gold = Estado.Ausente
+			labe[self.posicion].gold = Estado.Ausente
 			self.tiene_oro = True
 		elif tipo == Acciones.Girar:
-			self.posicion = girar(self.posicion, rotacion)
+			self.direccion = girar(self.direccion, rotacion)
 		return False
 
 	def mover(self, rotacion):
 		"""funcion que mueve al agente """
 		for steps in rotacion:
-			self.posicion = girar(self.posicion, steps)
-			self.direccion = mover_adelante(self.direccion, self.posicion)
+			self.direccion = girar(self.direccion, steps)
+			self.posicion = mover_adelante(self.posicion, self.direccion )
 
 
 	def disparar(self, labe, conoc):
 		""" lanzara la flecha y verifica si el wumpus fue herido """
-		x,y = self.direccion
+		x,y = self.posicion
 		ancho, alto = labe.size
 
 		# retirar la flecha
 		self.tiene_flecha= False
 
 		# dispara de acuerdo con la direccion acutal """
-		if self.posicion == 0:
+		if self.direccion == 0:
 
 			# sigue los cuadros de arriba
 			i = y
 			while i >=0:
-				conoc[x,i],wumpus = Estado.Ausente
+				conoc[x,i].wumpus = Estado.Ausente
 				if labe[x,i].wumpus == Estado.Presente:
 					labe[x,i].wumpus = Estado.Ausente
 					conoc.matar_wumpus()
 					return True
 				i +=1
-		elif self.posicion == 1:
+		elif self.direccion == 1:
 
 			# sigue los cuadros de la derecha
 			i = x
 			while i <ancho:
-				conoc[i,y],wumpus = Estado.Ausente
+				conoc[i,y].wumpus = Estado.Ausente
 				if labe[i,y].wumpus == Estado.Presente:
 					labe[i,y].wumpus = Estado.Ausente
 					conoc.matar_wumpus()
 					return True
 				i +=1
-		if self.posicion == 2:
+		if self.direccion == 2:
 
 			# sigue los cuadros de abajo
 			i = y
 			while i < alto:
-				conoc[x,i],wumpus = Estado.Ausente
+				conoc[x,i].wumpus = Estado.Ausente
 				if labe[x,i].wumpus == Estado.Presente:
 					labe[x,i].wumpus = Estado.Ausente
 					conoc.matar_wumpus()
@@ -155,7 +156,7 @@ class Agente:
 			# sigue los cuadros de la izquierda
 			i = x
 			while i >= 0:
-				conoc[i,y],wumpus = Estado.Ausente
+				conoc[i,y].wumpus = Estado.Ausente
 				if labe[i,y].wumpus == Estado.Presente:
 					labe[i,y].wumpus = Estado.Ausente
 					conoc.matar_wumpus()
@@ -202,14 +203,16 @@ class Conocimiento:
 			y +=1
 		return planta
 
-	def __getitem__(self,direccion):
+	def __getitem__(self,posicion):
 		""" obtiene el punto exacto del agente"""
-		x,y = direccion
+		x,y = posicion
+		#print(x,y)
+	
 		return self._cuartos[y][x]
 
-	def __setitem__(self, direccion, value):
+	def __setitem__(self, posicion, value):
 		""" define la direccion en el cuarto del agente"""
-		x,y = direccion
+		x,y = posicion
 		self._cuartos[y][x] = value
 
 	def cuartos (self, condicion=None):

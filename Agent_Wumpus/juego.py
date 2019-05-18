@@ -1,6 +1,8 @@
 import sys
 import random
 from entidades import *
+from conocimiento import *
+from movimiento import *
 
 
 
@@ -35,6 +37,32 @@ def dibujar(loc):
 		y +=1
 	print()
 
+def print_percepcion(percepciones):
+	wumpus, hueco, oro = percepciones
+	if wumpus == Estado.Presente:
+		print('Ud sintio un escalofrio el wumpus esta cerca.')
+	if hueco == Estado.Presente:
+		print('Ud sintio una brisa hay un hueco cerca.')
+	if oro == Estado.Presente:
+		print('Ud miro el oro brillar, esta cerca.')
+	if percepciones == (Estado.Ausente,)*3:
+		print('Ud no ha percibido nada')
+	print()
+
+def convertir_accion(accion):
+	if accion ==1:
+		return Acciones.Moverse, (0,)
+	elif accion == 2:
+		return Acciones.Girar, -1
+	elif accion == 3:
+		return Acciones.Girar, 1
+	elif accion == 4:
+		return Acciones.Coger, None
+	elif accion == 5:
+		return Acciones.Disparar, None
+    
+
+
 
 
 
@@ -42,9 +70,7 @@ if __name__ == "__main__":
 
 	# damos la bienvenida al juego
 	bienvenida()
-	# presentam las instrucciones del juego 
-	movimientos()
-
+	
 #===========================================================================================
 	#Definimos los objetos o  entidades ( Agente, Laberinto y Conocimiento)
 	agente =  Agente()
@@ -52,10 +78,39 @@ if __name__ == "__main__":
 	conocimiento = Conocimiento()
 	#print(conocimiento)
 	laberinto = Laberinto()
-	#print(laberinto) # solución muestra en que parte se encuentra el wumpus el oro y los huecos 
+	print(laberinto) # solución muestra en que parte se encuentra el wumpus el oro y los huecos 
 #===========================================================================================
 	
 while True:
 	print("Agente:\n {}".format(agente))
-	dibujar(agente.direccion)
+	dibujar(agente.posicion)
+	
 
+	# percepcion en el cuadro actual
+	percepciones = percibir(laberinto, agente.posicion)
+	if percepciones is None:
+		print("Fin del juego XXX Acaba de morir XXX")
+		break
+
+	print_percepcion(percepciones)
+
+	# Activar el modulo de inteligencia artificial pasando como parametro de entrada -Inteligencia
+
+	if "-Inteligencia" in sys.argv:
+		pass
+	else:
+		# presentam las instrucciones del juego 
+		movimientos()
+		accion = int(input("Qual es su proximo movimiento! "))
+		print()
+		accion = convertir_accion(accion)
+		print (convertir_accion)
+
+	# realizar acciones
+	if agente.rendimiento (accion, laberinto, conocimiento):
+		print ("Usted escucho un gruñido. \n")
+
+	if agente.tiene_oro and agente.posicion == (0,0):
+		dibujar(agente.posicion)
+		print("Usted derroto al wumpus y gano el juego .I.")
+		break
