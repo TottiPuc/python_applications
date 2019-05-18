@@ -1,5 +1,5 @@
 import random 
-from enumerar import *
+from enumerar import Entidad, Estado, Acciones, Objetivo, Orientacion
 from movimiento import *
 class Cuarto:
 	"""entidad que representa un unico cuadro del juego"""
@@ -20,9 +20,9 @@ class Cuarto:
 		""" devolvera un True si en el cuadro actual no hay ni un hueco ni el wumpus"""
 		if peligro is None:
 			return self.wumpus == Estado.Ausente and self.hueco == Estado.Ausente
-		if peligro == Wumpus:
+		if peligro == Entidad.Wumpus:
 			return self.wumpus == Estado.Ausente
-		if peligro == hueco:
+		if peligro == Entidad.hueco:
 			return self.hueco == Estado.Ausente
 		raise ValueError
 
@@ -34,9 +34,9 @@ class Cuarto:
 		""" devolvera True si en el cuadro puede existir presencia del wumpus o haber un hueco """
 		if peligro is None:
 			return self.wumpus == Estado.Probable and self.hueco == Estado.Probable
-		if peligro == Wumpus:
+		if peligro == Entidad.Wumpus:
 			return self.wumpus == Estado.Probable
-		if peligro == hueco:
+		if peligro == Entidad.hueco:
 			return self.hueco == Estado.Probable
 		raise ValueError
 
@@ -45,9 +45,9 @@ class Cuarto:
 		"""  devuelve True si en el cuadro definitivamente hay Wumpus o un hueco """
 		if peligro is None:
 			return self.wumpus == Estado.Presente and self.hueco == Estado.Presente
-		if peligro == Wumpus:
+		if peligro == Entidad.Wumpus:
 			return self.wumpus == Estado.Presente
-		if peligro == hueco:
+		if peligro == Entidad.hueco:
 			return self.hueco == Estado.Presente
 		raise ValueError
 

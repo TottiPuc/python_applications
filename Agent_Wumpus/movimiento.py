@@ -82,7 +82,7 @@ def camino_desconocido_rec(kb, loc, dest, camino, visitado):
   
   # Generador de vecinos explorados (pero aun no visitados por la busqueda)
   vecindario = (l for l in vecinos(loc) if l not in visitado 
-                  and (kb[l].is_explored or l == dest))
+                  and (kb[l].es_explorada or l == dest))
   
   # Iterar sobre cada vecino
   for n in vecindario:
@@ -92,7 +92,7 @@ def camino_desconocido_rec(kb, loc, dest, camino, visitado):
     visitado.add(n)
     
     # llamada recursiva
-    if known_path_rec(kb, n, dest, camino, visitado):
+    if camino_desconocido_rec(kb, n, dest, camino, visitado):
       return True
     
     # Backtrack: este nodo no conduce al destino

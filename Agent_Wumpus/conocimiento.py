@@ -1,6 +1,6 @@
 import random
 from enumerar import Estado, Entidad, Acciones, Objetivo
-from movimiento import vecinos, rotacion#, camino_conocido, camino_rotar
+from movimiento import vecinos, rotacion, camino_desconocido, camino_rotacion
 
 def percibir(conoc, loc):
 	""" retorna una tupla que contiene las percepciones locales del agente.
@@ -76,10 +76,10 @@ def tell(conoc, percepciones, loc):
       elif hueco == Estado.Probable:
         
         # Verifique se este es el único lugar donde el hueco puede estar
-        if len([r for r in near if r.es_peligroso(Entidad.Hueco)]) == 1:
+        if len([r for r in near if r.es_peligroso(Entidad.hueco)]) == 1:
           room.hueco = Estado.Presente
       elif room.hueco == Estado.Desconocido:
-        if all(r.es_seguro(Entidad.Hueco) for r in near if r != room):
+        if all(r.es_seguro(Entidad.hueco) for r in near if r != room):
         
           # Todos lois otros vecinos son seguros -> el hueco debe estar en este cuadro
           room.hueco = Estado.Presente
@@ -94,7 +94,7 @@ def actualizar(conoc, loc):
   """Atualizar el conocimiento."""
   # Atualiza el conocimento de acuerdo con todos los cuadros ya explorados
   
-  for l in [x for x in conoc.explorado]:
+  for l in [x for x in conoc.explorada]:
     tell(conoc, percibir(conoc, l), l)
 
 
@@ -107,7 +107,7 @@ def preguntar(kb, loc, direction, goal):
   
   # Si el agente está buscando oro
 
-  if goal == Buscar:
+  if goal == Objetivo.Buscar:
     
     # Verifica se esta sala contiene oro
     if kb[loc].oro == Estado.Presente:
@@ -117,30 +117,30 @@ def preguntar(kb, loc, direction, goal):
     state = lambda r: r.es_seguro() and r.es_inexplorada
     dest = next((l for l in vecinos(loc) if state(kb[l])), None)
     if dest:
-      return Acciones.Mover, (rotacion(loc, direction, dest),)
+      return Acciones.Moverse, (rotacion(loc, direction, dest),)
     
     # Obtiene cualquier cuadro seguro e inesperado (si el agente puede alcanzarlo)
     state = lambda r, l: r.es_seguro() and any(kb[x].es_explorada for x in vecinos(l))
     dest = next((l for l in kb.inexplorada if state(kb[l], l)), None)
     if dest:
       path = camino_desconocido(kb, loc, dest)
-      return Acciones.Mover, camino_rotacion(path, direction)
+      return Acciones.Moverse, camino_rotacion(path, direction)
     
     # Obtém un cuadro vecino que puede tener al wumpus pero no un hueco
-    state = lambda r: r.es_seguro(Entidad.Hueco) and r.es_inseguro(Entidad.Wumpus)
+    state = lambda r: r.es_seguro(Entidad.hueco) and r.es_inseguro(Entidad.Wumpus)
     dest = next((l for l in vecinos(loc) if state(kb[l])), None)
     if dest:
       return Acciones.Disparar, rotacion(loc, direction, dest)
     
     # Obtém un cuadro vecino que puede tener al wumpus pero no un hueco
-    state = lambda r: r.es_seguro(Entidad.Hueco) and r.es_inseguro(Entidad.Wumpus)
+    state = lambda r: r.es_seguro(Entidad.hueco) and r.es_inseguro(Entidad.Wumpus)
     dest = next((l for l in kb.inexplorada if state(kb[l])), None)
     if dest:
     
       # Obtiene un cuadro vecino esplorado
       dest = next((l for l in vecinos(dest) if kb[l].es_explorada))
       path = camino_desconocido(kb, loc, dest)
-      return Acciones.Mover, path_to_rotacion(path, direction)
+      return Acciones.Moverse, path_to_rotacion(path, direction)
     
     # Obtiene un cuadro vecino quqe puede tener al Wumpus
     state = lambda r: r.es_peligroso(Entidad.Wumpus)
@@ -149,22 +149,18 @@ def preguntar(kb, loc, direction, goal):
       return Acciones.Disparar, rotacion(loc, direction, dest)
     
     # Obtiene un cuadaro vecino que puede tener un hueco
-    rooms = [l for l in kb.inexplorada if kb[l].es_peligroso(Entidad.Hueco)]
+    rooms = [l for l in kb.inexplorada if kb[l].es_peligroso(Entidad.hueco)]
     if rooms:
       dest = random.choice(rooms)
       path = camino_desconocido(kb, loc, dest)
-      return Acciones.Mover, camino_rotacion(path, direction)
+      return Acciones.Moverse, camino_rotacion(path, direction)
     
     # Obtiene un cuadro explorado
     dest = next((l for l in kb.inexplorada), None)
     if dest:
       path = camino_desconocido(kb, loc, dest)
-      return Acciones.Mover, camino_rotacion(path, direction)
-  elif goal == Objetivo.Volver:
-    
-    # Vover para la entrada
-    path = camino_desconocido(kb, loc, (0, 0))
-    return Acciones.Mover, camino_rotacion(path, direction)
+      return Acciones.Moverse, camino_rotacion(path, direction)
+
   
   # Incapaz de encontrar una accion
   return None

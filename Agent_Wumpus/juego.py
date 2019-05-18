@@ -1,8 +1,10 @@
 import sys
+import os
 import random
-from entidades import *
-from conocimiento import *
+from entidades import *# Cuarto, Agente, conocimiento, Laberinto
+from conocimiento import tell, actualizar, preguntar, percibir
 from movimiento import *
+from enumerar import Estado, Objetivo, Acciones
 
 
 
@@ -93,11 +95,16 @@ while True:
 		break
 
 	print_percepcion(percepciones)
-
+	
 	# Activar el modulo de inteligencia artificial pasando como parametro de entrada -Inteligencia
 
 	if "-Inteligencia" in sys.argv:
-		pass
+		tell(conocimiento, percepciones, agente.posicion)
+		actualizar(conocimiento, agente.posicion)
+		objeti = Objetivo.Buscar if not agente.tiene_oro else Objetivo.Volver
+		accion =preguntar(conocimiento, agente.posicion, agente.direccion, objeti)
+		print(" Accion:\n{} {}\n".format(*accion))
+		input("Oprima Enter para la proxima Accion...")
 	else:
 		# presentam las instrucciones del juego 
 		movimientos()
@@ -114,3 +121,5 @@ while True:
 		dibujar(agente.posicion)
 		print("Usted derroto al wumpus y gano el juego .I.")
 		break
+	#os.system("cls")
+
