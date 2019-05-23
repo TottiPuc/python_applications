@@ -20,6 +20,15 @@ class DistProbab:
     			self[v] = p
     			self.normalize()
 
-    
+    def normalize(self):
+    	""" Caso las frecuencias seas pasadas como argumento se normalizan y se verifica si la suma total es 1 """
+    	total = sum(self.prob.values())
+    	if not isclose(total,1.0):
+    		for val in self.prob:
+    			self.prob[val]/= total
+    	return self
+
+
+
         
     
