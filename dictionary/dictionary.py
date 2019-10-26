@@ -10,10 +10,24 @@ def translate(word):
     if word in data:
         return data[word]
     elif len(get_close_matches(word, data.keys(), cutoff=0.6)) > 0: # verifivar si existen coincidencias 
-        return "Did you mean: {} instead?".format(get_close_matches(word, data.keys(), cutoff=0.6)[0])
+        newWord = input("Did you mean: '{}' instead? [y/n]".format(get_close_matches(word, data.keys(), cutoff=0.6)[0]))
+        if newWord == "y":
+            return data[get_close_matches(word, data.keys(), cutoff=0.6)[0]]
+        elif newWord == "n":
+            return "this word does not exist, please enter a correct word." 
+        else:
+            return "I did not understand your entry"        
     else:
         return "this word does not exist"
 
 word = input("Enter a word: ")
 
-print(translate(word))
+out = translate(word)
+
+# verificando el tipo de salida
+
+if type(out) == str:
+    print(out)
+else:
+    for i in out:
+       print("==> {}".format(i))
