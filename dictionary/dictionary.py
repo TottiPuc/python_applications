@@ -11,6 +11,8 @@ def translate(word):
         return data[word]
     elif word.title() in data: # nueva funcionalidad verifica si hay nombres propios que empiezan por mayusculas 
         return data[word.title()]
+    elif word.upper() in data: # condicional para buscar acronimos
+        return data[word.upper()]
     elif len(get_close_matches(word, data.keys(), cutoff=0.6)) > 0: # verifivar si existen coincidencias 
         newWord = input("Did you mean: '{}' instead? [y/n]".format(get_close_matches(word, data.keys(), cutoff=0.6)[0]))
         if newWord == "y":
