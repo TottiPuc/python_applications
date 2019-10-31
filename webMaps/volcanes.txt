@@ -1,0 +1,7 @@
+NOMBRE,MUNICIPIO,LAT,LONG
+Cumbal,Mirafloes,0.959034,-77.886199
+Chiles,La Puerta,0.821371,-77.933238
+Galeras,Pasto,1.13438,-77.21330
+Doña Juana,Narino,1.2815,-76.5530
+Cerro Negro,El tambo,0.833042,-77.964481
+Azufral,Tuquerres,1.089267,-77.683177
