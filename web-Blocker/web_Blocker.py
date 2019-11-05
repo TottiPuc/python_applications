@@ -14,8 +14,8 @@ websites_list =["www.facebook.com","facebook.com","www.youtube.com","youtube.com
 
 while True:
     # condicional que verifica si le fecha y hora actual es mayo a las 8 am y menos a las 4pm 
-    if dt(dt.now().year, dt.now().month, dt.now().day,8) < dt.now() < dt(dt.now().year, dt.now().month, dt.now().day,16) :
-        with open(host_temp,'r+') as file:
+    if dt(dt.now().year, dt.now().month, dt.now().day,8) < dt.now() < dt(dt.now().year, dt.now().month, dt.now().day,22) :
+        with open(hosts_path,'r+') as file:
             print("archivo ha ser modificado...{}".format(file.name))
             content = file.read() # lectura del archivo host como un string
             for website in websites_list: # rerorrer la lista de websites a bloquear
@@ -26,7 +26,7 @@ while True:
                     file.write("\n" + redirect + "\t" + website )
             print("working hours... you have to be working... :()")
     else:
-        with open(host_temp,'r+') as file:
+        with open(hosts_path,'r+') as file:
             print("archivo ha ser modificado...{}".format(file.name))
             content = file.readlines() # lectura del archivo host como una lista 
             file.seek(0)
