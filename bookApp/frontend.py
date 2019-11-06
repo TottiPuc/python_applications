@@ -13,12 +13,9 @@ Delete
 close
 """
 from tkinter import *
+import backend
 
 window = Tk()  # ventana principal
-
-#callback functions
-#==========================================================================
-
 
 #agregando widgets
 #==========================================================================
