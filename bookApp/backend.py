@@ -7,10 +7,10 @@ def connect():
     conn.commit()
     conn.close()
 
-def insert(title, author, year, isbn):
+def insert(title="", author="", year="", isbn=""):
     conn = sqlite3.connect("books.db")
     cur= conn.cursor()
-    cur.execute("INSERT INTO book VALUES (NULL,'{}','{}','{}','{}')".format(title,author,year,isbn))
+    cur.execute("INSERT INTO book VALUES (NULL,?,?,?,?)",(title,author,year,isbn))
     conn.commit()
     conn.close()
 

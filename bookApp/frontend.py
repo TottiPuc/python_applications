@@ -30,6 +30,16 @@ def search_parameters():
     for row in backend.search(title_text.get(),author_text.get(),year_text.get(),isbn_text.get()):
         lista1.insert(END,row)
 
+def insert_parameter():
+    lista1.delete(0,END)
+    backend.insert(title_text.get(),author_text.get(),year_text.get(),isbn_text.get())
+    lista1.insert(END,(title_text.get(),author_text.get(),year_text.get(),isbn_text.get()))
+
+def get_selected_row(event):
+    index = lista1.curselection()[0]
+    print (index)
+
+
 #agregando widgets
 #==========================================================================
 #row0
@@ -75,6 +85,8 @@ sb1.grid(row=2,column=2,rowspan=6)
 lista1.configure(yscrollcommand=sb1.set)
 sb1.configure(command=lista1.yview)
 
+lista1.bind('<<ListboxSelect>>', get_selected_row) # funcion que enlaza lo seleccionado con el evento del metodo delete del backend
+
 #configurando botones de entrada
 
 buton1=Button(window,text="View all",width=12,command=view_parameters)
@@ -83,7 +95,7 @@ buton1.grid(row=2,column=3)
 buton2=Button(window,text="Search entry",width=12,command=search_parameters)
 buton2.grid(row=3,column=3)
 
-buton3=Button(window,text="Add entry",width=12)
+buton3=Button(window,text="Add entry",width=12,command=insert_parameter)
 buton3.grid(row=4,column=3)
 
 buton4=Button(window,text="Update",width=12)
