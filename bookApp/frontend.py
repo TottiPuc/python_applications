@@ -17,6 +17,19 @@ import backend
 
 window = Tk()  # ventana principal
 
+#callback functions
+#==========================================================================
+def view_parameters():
+    lista1.delete(0,END) # se blanquea el cuadro 
+    for row in backend.view():
+        lista1.insert(END,row) # al elemento lista1 se le agregan las tuplas obtenidas de la funcion view del modulo backend
+
+
+def search_parameters():
+    lista1.delete(0,END)
+    for row in backend.search(title_text.get(),author_text.get(),year_text.get(),isbn_text.get()):
+        lista1.insert(END,row)
+
 #agregando widgets
 #==========================================================================
 #row0
@@ -64,10 +77,10 @@ sb1.configure(command=lista1.yview)
 
 #configurando botones de entrada
 
-buton1=Button(window,text="View all",width=12)
+buton1=Button(window,text="View all",width=12,command=view_parameters)
 buton1.grid(row=2,column=3)
 
-buton2=Button(window,text="Search entry",width=12)
+buton2=Button(window,text="Search entry",width=12,command=search_parameters)
 buton2.grid(row=3,column=3)
 
 buton3=Button(window,text="Add entry",width=12)

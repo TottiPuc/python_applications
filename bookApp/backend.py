@@ -14,7 +14,7 @@ def insert(title, author, year, isbn):
     conn.commit()
     conn.close()
 
-def viwe():
+def view():
     conn = sqlite3.connect("books.db")
     cur = conn.cursor()
     cur.execute("SELECT * FROM book")
@@ -45,9 +45,9 @@ def update(id,title,author,year,isbn):
     conn.close()
 
 connect() # para que la funcion de crear se llame simpere que se ejecute el frontend
-insert("image","andrew",2020,98765652)
+""" insert("image","andrew",2020,98765652)
 delete(9)
-print(viwe())
+print(view())
 print(search(year="2020"))
 update(1,"processing","XIan",2019,00000)
-print(viwe())
+print(view()) """
