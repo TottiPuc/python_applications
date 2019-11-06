@@ -16,6 +16,7 @@ from tkinter import *
 import backend
 
 window = Tk()  # ventana principal
+window.wm_title("Paper Store")
 
 #callback functions
 #==========================================================================
@@ -36,8 +37,41 @@ def insert_parameter():
     lista1.insert(END,(title_text.get(),author_text.get(),year_text.get(),isbn_text.get()))
 
 def get_selected_row(event):
-    index = lista1.curselection()[0]
-    print (index)
+    global selected_row # se hace global por el hecho del evento ser llamado dentro de la funcino delet_parameter
+    try:
+        index = lista1.curselection()[0] # con esto se obtiene el indice de la lista  de valores
+        selected_row =lista1.get(index)  # con este se obtiene el indice de la base de datos 
+        #colocar cada valor del item selecionado en las ventanas de entrada correspondientes
+        entry1.delete(0,END)
+        entry1.insert(END,selected_row[1])
+        entry2.delete(0,END)
+        entry2.insert(END,selected_row[2])
+        entry3.delete(0,END)
+        entry3.insert(END,selected_row[3])
+        entry4.delete(0,END)
+        entry4.insert(END,selected_row[4])
+        #print (index,selected_row)
+        #backend.delete(selected_row) # se borra solo seleccionandolo de la lista
+        #view_parameters()
+        #return selected_row
+    except IndexError:
+        pass
+
+def delet_parameter():
+    backend.delete(selected_row[0])
+    entry1.delete(0,END)
+    entry2.delete(0,END)
+    entry3.delete(0,END)
+    entry4.delete(0,END)
+    view_parameters()
+
+def update_parameter():
+    backend.update(selected_row[0],title_text.get(),author_text.get(),year_text.get(),isbn_text.get())
+    view_parameters()
+    entry1.delete(0,END)
+    entry2.delete(0,END)
+    entry3.delete(0,END)
+    entry4.delete(0,END)
 
 
 #agregando widgets
@@ -58,19 +92,19 @@ entry2 = Entry(window,textvariable=author_text)
 entry2.grid(row=0,column=3)
 
 #row1
-label1 = Label(window,text="Year")
-label1.grid(row=1,column=0)
+label3 = Label(window,text="Year")
+label3.grid(row=1,column=0)
 
 year_text=StringVar()
-entry1 = Entry(window,textvariable=year_text)
-entry1.grid(row=1,column=1)
+entry3 = Entry(window,textvariable=year_text)
+entry3.grid(row=1,column=1)
 
-label2 = Label(window, text="ISBN")
-label2.grid(row=1,column=2)
+label4 = Label(window, text="ISBN")
+label4.grid(row=1,column=2)
 
 isbn_text=StringVar()
-entry2 = Entry(window,textvariable=isbn_text)
-entry2.grid(row=1,column=3)
+entry4 = Entry(window,textvariable=isbn_text)
+entry4.grid(row=1,column=3)
 
 #row 3 a head
 
@@ -98,13 +132,13 @@ buton2.grid(row=3,column=3)
 buton3=Button(window,text="Add entry",width=12,command=insert_parameter)
 buton3.grid(row=4,column=3)
 
-buton4=Button(window,text="Update",width=12)
+buton4=Button(window,text="Update",width=12,command=update_parameter)
 buton4.grid(row=5,column=3)
 
-buton5=Button(window,text="Delete",width=12)
+buton5=Button(window,text="Delete",width=12,command=delet_parameter)
 buton5.grid(row=6,column=3)
 
-buton6=Button(window,text="Close",width=12)
+buton6=Button(window,text="Close",width=12,command=window.destroy)
 buton6.grid(row=7,column=3)
 
 

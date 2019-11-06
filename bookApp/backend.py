@@ -22,7 +22,7 @@ def view():
     conn.close()
     return rows
 
-def search(title="",author="",year="",isbn=""):
+def search(title,author,year,isbn):
     conn=sqlite3.connect("books.db")
     cur=conn.cursor()
     cur.execute("SELECT * fROM book WHERE title ='{}' OR author ='{}' OR year ='{}' OR isbn='{}'".format(title,author,year,isbn) )
