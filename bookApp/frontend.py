@@ -13,7 +13,9 @@ Delete
 close
 """
 from tkinter import *
-import backend
+from backend import Database
+
+database=Database("books.db")
 
 window = Tk()  # ventana principal
 window.wm_title("Paper Store")
@@ -22,18 +24,18 @@ window.wm_title("Paper Store")
 #==========================================================================
 def view_parameters():
     lista1.delete(0,END) # se blanquea el cuadro 
-    for row in backend.view():
-        lista1.insert(END,row) # al elemento lista1 se le agregan las tuplas obtenidas de la funcion view del modulo backend
+    for row in database.view():
+        lista1.insert(END,row) # al elemento lista1 se le agregan las tuplas obtenidas de la funcion view del modulo database
 
 
 def search_parameters():
     lista1.delete(0,END)
-    for row in backend.search(title_text.get(),author_text.get(),year_text.get(),isbn_text.get()):
+    for row in database.search(title_text.get(),author_text.get(),year_text.get(),isbn_text.get()):
         lista1.insert(END,row)
 
 def insert_parameter():
     lista1.delete(0,END)
-    backend.insert(title_text.get(),author_text.get(),year_text.get(),isbn_text.get())
+    database.insert(title_text.get(),author_text.get(),year_text.get(),isbn_text.get())
     lista1.insert(END,(title_text.get(),author_text.get(),year_text.get(),isbn_text.get()))
 
 def get_selected_row(event):
@@ -51,14 +53,14 @@ def get_selected_row(event):
         entry4.delete(0,END)
         entry4.insert(END,selected_row[4])
         #print (index,selected_row)
-        #backend.delete(selected_row) # se borra solo seleccionandolo de la lista
+        #database.delete(selected_row) # se borra solo seleccionandolo de la lista
         #view_parameters()
         #return selected_row
     except IndexError:
         pass
 
 def delet_parameter():
-    backend.delete(selected_row[0])
+    database.delete(selected_row[0])
     entry1.delete(0,END)
     entry2.delete(0,END)
     entry3.delete(0,END)
@@ -66,7 +68,7 @@ def delet_parameter():
     view_parameters()
 
 def update_parameter():
-    backend.update(selected_row[0],title_text.get(),author_text.get(),year_text.get(),isbn_text.get())
+    database.update(selected_row[0],title_text.get(),author_text.get(),year_text.get(),isbn_text.get())
     view_parameters()
     entry1.delete(0,END)
     entry2.delete(0,END)
