@@ -1,6 +1,7 @@
 import sqlite3
 
 class Database:
+    """this class provides methods to insert, create update search amd delete elements of a database """
 
     def __init__(self,db):
         self.conn=sqlite3.connect(db)
